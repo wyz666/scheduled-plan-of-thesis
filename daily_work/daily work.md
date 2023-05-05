@@ -1,4 +1,4 @@
-##完成git计划表仓库的创建
+## 完成git计划表仓库的创建
 git  init
 git add 要加的文件
 git commit -m "这里的词条会写在GitHub中文件的后面"
