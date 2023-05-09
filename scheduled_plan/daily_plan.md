@@ -23,12 +23,12 @@ alexnet运行
 
 #### 找一篇非常好的博客
 讲解pytorch显存的，分享给文恺  
-<font color='red'> 5.5晚注: </font>需要再找一篇交叉比较<font color='LimeGreen'> 5.7已解决 </font>  
+<font color='LimeGreen'> 5.5晚注: </font>需要再找一篇交叉比较<font color='LimeGreen'> 5.7已解决 </font>  
 
 
 #### 快速过一遍老师的论文
 进行总结  
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>
 
 #### 找一篇关于多目标的博客或者知乎
 分享  
@@ -45,7 +45,7 @@ alexnet运行
 <font color='red'> 未完成 </font>
 
 #### 在模型训练前，确认cuda的上下文是怎么出来的？（看代码）  
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>注：CUDA context，CUDA运行时固有配件必须要占用的显存，无需研究
 
 pytorch视频讲解
 
@@ -76,17 +76,32 @@ pytorch视频讲解
 <font color='LimeGreen'> 完成 </font>
 
 #### 继续看pytorch显存调度
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>
 
 #### 调研遗传算法解决工作流问题，整理出汇报文档
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>
 
 ## 5.9任务
 
 ####调研遗传算法解决工作流问题，整理出汇报文档
-
+<font color='LimeGreen'> 完成 </font>
 #### 继续看pytorch显存调度
-
+<font color='LimeGreen'> 完成 </font>
 #### 汇报进度，得到反馈
+<font color='LimeGreen'> 完成 </font>   
+调研pytorch生成神经网络计算流图机制  
+研究GA对计算流图建模方式  
+研究流图拓扑排序对显存占用的影响  
+研究pytorch内存碎片问题  
+研究olla如何将两个问题合在一起，多目标  
+下次汇报，5.12
 
-#### 给alexnet打上查看显存分配的断点
+#### 给alexnet打上查看显存分配的断点 
+<font color='red'> 未完成 </font> 
+
+
+## 5.10任务
+#### 重要：解决LeNet384MB问题及alexnet显存分配问题
+#### 调研PyTorch计算图
+#### 结合GA给出计算图建模思路
+#### 调研OLLA如何做多目标
