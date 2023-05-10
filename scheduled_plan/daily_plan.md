@@ -102,6 +102,17 @@ pytorch视频讲解
 
 ## 5.10任务
 #### 重要：解决LeNet384MB问题及alexnet显存分配问题
+<font color='red'> 未完成 </font>
 #### 调研PyTorch计算图
+<font color='red'> 未完成 </font>
 #### 结合GA给出计算图建模思路
+<font color='red'> 未完成 </font>
 #### 调研OLLA如何做多目标
+<font color='red'> 未完成 </font>
+
+## 5.11任务
+#### 研究数据流图，写汇报文档
+
+#### 调研tensor.to调用显存步骤
+目前进度：pytorch源码，Tensor.cpp,TensorBase.h,TemsorAccessor.h记录tensor的size和strides信息,TensorOptions.cpp  
+#### 补进度  

@@ -23,6 +23,8 @@ docker run --gpus all -p 7600:22 --name toch1.8-cu11
 前向传播：Y=act(WX+b),求出Loss(output)  
 **反向传播理解**：对W，b求导准备梯度更新，更新W需要求Loss对W的偏导，例如X<sub>n</sub>到Y<sub>m</sub>的参数W<sub>nm</sub>，L对W<sub>nm</sub>的偏导就是L对Y<sub>m</sub>的偏导（即反向传播每个神经元的值）乘上Y<sub>m</sub>对W<sub>nm</sub>的偏导（即前向传播的X<sub>n</sub>）  
 梯度更新：根据学习率和导数更新权重和偏置。这里会使用优化器（SGD，Adam），可以加速训练，有额外的显存开销。  
+Dropout：训练时，随即丢弃一些神经元  
+Batch normalization（BN）：训练时，数据标准化。把数据均匀分布到激活函数敏感区域
 
 **PyTorch卷积原理**  
 im2col算法：PyTorch，Caffe中卷积的实现都是基于一个im2col算法。将卷积运算转换为矩阵乘法运算。通过reshap将输入（C<sub>in</sub>, H<sub>in</sub>, W<sub>in</sub>）转为矩阵（H<sub>out</sub>W<sub>out</sub>, H<sub>k</sub>W<sub>k</sub>C<sub>in</sub>)，将C<sub>out</sub>个卷积核（H<sub>k</sub>, W<sub>k</sub>, C<sub>in</sub>）转为矩阵（H<sub>k</sub>W<sub>k</sub>C<sub>in</sub>, C<sub>out</sub>），输出一个（H<sub>out</sub>W<sub>out</sub>, C<sub>out</sub>）的矩阵，再reshape为（C<sub>out</sub>, H<sub>out</sub>, W<sub>out</sub>）  
@@ -75,6 +77,13 @@ get_allocation_size函数中明确：
 alloc block返回的block大小会大于实际申请大小，所以在分配后会进行拆分。且新的block无法保证与之前的block地址连续，无法写在双链表中。   
 每当一个block被释放时，会判断前后是否有空闲块，有就合并减少碎片。  
 结论：碎片问题突出
+
+### Tensor
+PyTorch张量默认存储到CPU上，用cuda方法转移到指定GPU上。  
+pytorch中，一个tensor分为信息区Tensor和存储区Storage。信息区保存形状，步长，数据类型等信息。Storage将数据保存成连续数组，存在存储区。
+
+
+### PyTorch计算图
 
 
 ### PyTorch实验心得
