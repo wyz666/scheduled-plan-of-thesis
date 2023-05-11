@@ -28,7 +28,12 @@ Batch normalization（BN）：训练时，数据标准化。把数据均匀分�
 
 **PyTorch卷积原理**  
 im2col算法：PyTorch，Caffe中卷积的实现都是基于一个im2col算法。将卷积运算转换为矩阵乘法运算。通过reshap将输入（C<sub>in</sub>, H<sub>in</sub>, W<sub>in</sub>）转为矩阵（H<sub>out</sub>W<sub>out</sub>, H<sub>k</sub>W<sub>k</sub>C<sub>in</sub>)，将C<sub>out</sub>个卷积核（H<sub>k</sub>, W<sub>k</sub>, C<sub>in</sub>）转为矩阵（H<sub>k</sub>W<sub>k</sub>C<sub>in</sub>, C<sub>out</sub>），输出一个（H<sub>out</sub>W<sub>out</sub>, C<sub>out</sub>）的矩阵，再reshape为（C<sub>out</sub>, H<sub>out</sub>, W<sub>out</sub>）  
-<font color='red'> 纠正： </font>卷积操作参数量计算方法为输出通道数C<sub>out</sub>×（输入通道数C<sub>in</sub>×长k<sub>W</sub>×高k<sub>H</sub>）+偏执，输出通道数即为卷积核数量，（k<sub>H</sub>k<sub>W</sub>C<sub>in</sub>）为卷积核形状
+<font color='red'> 纠正： </font>卷积操作参数量计算方法为输出通道数C<sub>out</sub>×（输入通道数C<sub>in</sub>×长k<sub>W</sub>×高k<sub>H</sub>）+偏执，输出通道数即为卷积核数量，（k<sub>H</sub>k<sub>W</sub>C<sub>in</sub>）为卷积核形状。  
+**PyTorch forward调用**  
+out = net(input)调用\_\_call\_\_方法  
+\_\_call\_\_方法中调用forward方法，由于每个网络定义时都重写了forward方法，所以都调用的是重写之后的forward方法
+  
+
 
 **GPU一些概念**  
 Stream（流）：一系列顺序执行的命令，流之间无序、并发  
@@ -46,6 +51,8 @@ Grid、Block和Thread：软件概念。一个grid分为多个block，一个block
 torch.cuda.memory\_allocated()：当前进程中torch.Tensor所占用的GPU显存  
 torch.cuda.max\_memory\_allocated()：到调用该函数为止最大的显存占用字节数  
 torch.cuda.memory\_reserved()：查看当前进程所分配的显存缓冲区是多少  
+
+
 ### PyTorch显存分配机制
 **多级分配机制**  
 PyTorch分配显存时，会先向CUDA（GPU）申请MB为单位的空间放入到Cached Memory中，然后再为进程分配Memory。GPU(CUDA)->cached mem->allocated mem
@@ -80,11 +87,23 @@ alloc block返回的block大小会大于实际申请大小，所以在分配后�
 
 ### Tensor
 PyTorch张量默认存储到CPU上，用cuda方法转移到指定GPU上。  
-pytorch中，一个tensor分为信息区Tensor和存储区Storage。信息区保存形状，步长，数据类型等信息。Storage将数据保存成连续数组，存在存储区。
+pytorch中，一个tensor分为信息区Tensor和存储区Storage。信息区保存形状，步长，数据类型等信息。Storage将数据保存成连续数组，存在存储区。  
 
 
 ### PyTorch计算图
+属性：边，表示操作或者操作的依赖；有输入边的点，表示一个操作；有输出边的点，表示一个变量  
+分为静态图和动态图  
+**静态图**：TensorFlow使用静态图。首先定义图的结构，然后为叶节点赋值（使用占位符placeholder）。根据叶结点的分配进行前向传播。  
+**动态图**：PyTorch使用动态图。图结构在前向传播时逐步生成，无需占位符。每迭代一次都会构建一个新的计算图。PyTorch中，计算图用于反向传播计算参数梯度(autograd)。
+![](https://pic1.zhimg.com/v2-10fbe3014f69719d13d1f92aadd42ec8_b.webp)
+**torch.FX**
+主要有三个组件：符号追踪器（symbolic tracer），中间表示（intermediate representation）， Python代码生成（Python code generation）。  
+符号追踪器对模块的forward代码进行符号执行，它送入的是假的输入，叫做Proxies，代码中的所有operations都被记录下来。与TensorFlow构建静态图有点类似，Proxies类似placeholder。   
+最终得到计算图的中间表示torch.fx.Graph，是静态图，记录了所有ops。一个Graph包括许多torch.fx.Node。Node是Gragh的基本单元，对应一个op。​
 
+### PyTorch源码解析
+C10：Caffe Tensor Library，最基础的张量库，包含PyTorch的核心抽象，包括张量和存储数据结构的实际实现  
+ATen：A Tensor library，实现张量的操作
 
 ### PyTorch实验心得
 在学校服务器上远程同步本地代码，创建docker容器cu11(cuda11,cudnn8)  
@@ -118,3 +137,5 @@ fitness：运行时间的倒数，未给详细推导公式
 建模方式还需要研究一下pytorch计算流图  
 我对神经网络建模后是否可以对网络进行一个仿真训练得到显存占用？  
 我可以借鉴一些改良的遗传算法
+
+**Markdown插图**  图片名不能有中文，图片与笔记在同目录下，格式为\!\[](图片名)

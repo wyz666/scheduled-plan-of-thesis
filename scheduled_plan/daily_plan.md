@@ -104,15 +104,23 @@ pytorch视频讲解
 #### 重要：解决LeNet384MB问题及alexnet显存分配问题
 <font color='red'> 未完成 </font>
 #### 调研PyTorch计算图
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>
 #### 结合GA给出计算图建模思路
 <font color='red'> 未完成 </font>
 #### 调研OLLA如何做多目标
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>：没有做多目标
 
 ## 5.11任务
 #### 研究数据流图，写汇报文档
-
+<font color='LimeGreen'> 完成 </font>
 #### 调研tensor.to调用显存步骤
 目前进度：pytorch源码，Tensor.cpp,TensorBase.h,TemsorAccessor.h记录tensor的size和strides信息,TensorOptions.cpp  
+<font color='red'> 未完成 </font>
 #### 补进度  
+
+
+## 5.12任务
+#### 看完OLLA实验部分，写汇报文档
+#### 汇报进度，得到反馈
+#### 看swapadvisor，学习GA建模方式
+#### 建模
