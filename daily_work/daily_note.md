@@ -81,7 +81,7 @@ get_allocation_size函数中明确：
 **release cached blocks函数**  
 释放所有blocks，再cudaMalloc。与上一步不同在于把大小在阈值以下的blocks也都释放掉  
 
-alloc block返回的block大小会大于实际申请大小，所以在分配后会进行拆分。且新的block无法保证与之前的block地址连续，无法写在双链表中。   
+alloc block返回的block大小会大于实际申请大小，所以在分配后会进行拆分。且新的block无法保证与之前的block地址连续，无法写在双链表中。  
 每当一个block被释放时，会判断前后是否有空闲块，有就合并减少碎片。  
 结论：碎片问题突出
 

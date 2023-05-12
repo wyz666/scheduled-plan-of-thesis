@@ -121,6 +121,15 @@ pytorch视频讲解
 
 ## 5.12任务
 #### 看完OLLA实验部分，写汇报文档
+<font color='LimeGreen'> 完成 </font>
 #### 汇报进度，得到反馈
+<font color='blue'> 暂缓 </font>
 #### 看swapadvisor，学习GA建模方式
+<font color='LimeGreen'> 完成 </font>
 #### 建模
+<font color='red'> 未完成 </font>
+
+
+## 5.13任务
+#### 整理知识碎片，写出3000字
+#### 结合GA，神经网络建模
