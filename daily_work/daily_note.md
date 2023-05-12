@@ -55,7 +55,7 @@ torch.cuda.memory\_reserved()：查看当前进程所分配的显存缓冲区是
 
 ### PyTorch显存分配机制
 **多级分配机制**  
-PyTorch分配显存时，会先向CUDA（GPU）申请MB为单位的空间放入到Cached Memory中，然后再为进程分配Memory。GPU(CUDA)->cached mem->allocated mem
+PyTorch分配显存时，会先向CUDA（GPU）申请MB为单位的空间放入到Cached Memory中，然后再为进程分配Memory。GPU(CUDA)->cached mem->allocated mem  
 **Block**  
 Block是管理内存块的基本单位，由三元组(stream\_id, size, ptr)定位，ptr决定内存地址，size决定大小，stram\_id决定为哪个CUDA流工作。  
 所有连续的Block都被组织在一个双向链表里，以便将碎片合成整块。  
@@ -116,7 +116,7 @@ alexnet仓配置环境时loss.backword()报错，是因为torch版本问题,由1
 CUDA context，就是在第一次执行CUDA操作，也就是使用GPU的时候所需要创建的维护设备间工作的一些相关信息。即CUDA running时固有配件必须要占掉的显存。  
 在shell中执行temp = torch.tensor([1.0]).cuda()可以测出CUDA context开销，在我的conda环境alex下，pytorch版本1.2，开销为927M  
 
-### GA解决工作流问题  
+## GA解决工作流问题  
 Grid Workflow Scheduling Based on Improved Genetic Algorithm  
 改进遗传算法，网格工作流调度，有向无环图a directed acyclic graph (DAG)  
 问题描述：将工作流描述为一系列子任务。  
