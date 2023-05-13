@@ -115,7 +115,7 @@ pytorch视频讲解
 <font color='LimeGreen'> 完成 </font>
 #### 调研tensor.to调用显存步骤
 目前进度：pytorch源码，Tensor.cpp,TensorBase.h,TemsorAccessor.h记录tensor的size和strides信息,TensorOptions.cpp  
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成 </font>
 #### 补进度  
 
 
@@ -132,4 +132,11 @@ pytorch视频讲解
 
 ## 5.13任务
 #### 整理知识碎片，写出3000字
+<font color='red'> 未完成 </font>
 #### 结合GA，神经网络建模
+<font color='red'> 未完成 </font>
+
+## 5.14任务
+#### 建模
+#### 补论文进度至3000字
+#### torch.fx

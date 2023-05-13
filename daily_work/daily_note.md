@@ -65,7 +65,7 @@ DeviceCachingAllocator 中维护两种 BlockPool (large\_blocks, small\_blocks)�
 Block 在 Allocator 内有两种组织方式，一种是显式地组织在 BlockPool（红黑树）中，按照大小排列；另一种是具有连续地址的 Block 隐式地组织在一个双向链表里（通过结构体内的 prev, next 指针），可以以 O(1) 时间查找前后 Block 是否空闲，便于在释放当前 Block 时合并碎片。  
 **get free block函数**  
 找能满足size的且大小相差不是太大的block(相差不超过20MB)  
-**trigger free memory callbacks函数  **
+**trigger free memory callbacks函数**
 主动调用collect函数，将缓存区reference为0的blocks回收（使用过的后续不会调用的，不回收就闲置在缓存区也不会被分配），不让这些blocks闲置，再执行get free block  
 **alloc block函数**  
 上两步都执行完了实在无可分配block了，调用cudaMalloc向显存要新的block。  
