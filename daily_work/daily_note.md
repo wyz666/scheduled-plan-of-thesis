@@ -89,17 +89,37 @@ alloc block返回的block大小会大于实际申请大小，所以在分配后�
 PyTorch张量默认存储到CPU上，用cuda方法转移到指定GPU上。  
 pytorch中，一个tensor分为信息区Tensor和存储区Storage。信息区保存形状，步长，数据类型等信息。Storage将数据保存成连续数组，存在存储区。  
 
+### PyTorch模型的两种参数
+模型中的参数保存在state\_dict()方法中，属于OrderDict类，是键值对的形式  
+![](https://img-blog.csdnimg.cn/20210617213356840.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQwMjA2Mzcx,size_16,color_FFFFFF,t_70)
+**parameter**：反向传播时需要被optimizer更新，例如ConvNd,Linear,RNN，里面的权重参数会被自动认为Parameter，属于parameter类  
+**buffer**：反向传播时不需要被optimizer更新，模型中不需要更新的参数注册会buffer保存在OrderDict中，便于模型转移设备时参数一起移动，属于tensor类
 
 ### PyTorch计算图
 属性：边，表示操作或者操作的依赖；有输入边的点，表示一个操作；有输出边的点，表示一个变量  
 分为静态图和动态图  
 **静态图**：TensorFlow使用静态图。首先定义图的结构，然后为叶节点赋值（使用占位符placeholder）。根据叶结点的分配进行前向传播。  
-**动态图**：PyTorch使用动态图。图结构在前向传播时逐步生成，无需占位符。每迭代一次都会构建一个新的计算图。PyTorch中，计算图用于反向传播计算参数梯度(autograd)。
-![](https://pic1.zhimg.com/v2-10fbe3014f69719d13d1f92aadd42ec8_b.webp)
-**torch.FX**
+**动态图**：PyTorch使用动态图。图结构在前向传播时逐步生成，无需占位符。每迭代一次都会构建一个新的计算图。PyTorch中，计算图用于反向传播计算参数梯度(autograd)。  
+![](https://pic1.zhimg.com/v2-10fbe3014f69719d13d1f92aadd42ec8_b.webp)  
+#### torch.FX
 主要有三个组件：符号追踪器（symbolic tracer），中间表示（intermediate representation）， Python代码生成（Python code generation）。  
 符号追踪器对模块的forward代码进行符号执行，它送入的是假的输入，叫做Proxies，代码中的所有operations都被记录下来。与TensorFlow构建静态图有点类似，Proxies类似placeholder。   
-最终得到计算图的中间表示torch.fx.Graph，是静态图，记录了所有ops。一个Graph包括许多torch.fx.Node。Node是Gragh的基本单元，对应一个op。​
+得到计算图的中间表示torch.fx.Graph，是静态图，记录了所有ops。  
+一个Graph包括许多torch.fx.Node。Node是Gragh的基本单元，每个Node包含opcode，name，target，args，kwargs。Opcode记录操作类型，name记录操作名，target记录节点调用的对象，args和kwargs是节点的输入参数。  
+最后根据Graph的语义自动生成相应的执行代码。  
+ 
+通过symbolic\_trace函数，将Module映射到GraghModule。  
+trace流程：  
+1. 解析输入Module基本信息：输入的module赋值给self.root，对module的forward的函数签名（用来获取函数的参数列表，参数个数+参数类型+返回值）进行解析。  
+2. 创建Gragh，初始化  
+3. 为module的forward中除了self之外的每个输入参数创建Node和Proxy  
+4. 使用动态属性替换（monkey patch），记录操作信息（），生成计算图节点，具体做法：  
+&nbsp; 1. 暂时修改nn.Module类的静态方法\_\_getattr\_\_，拿到模型参数，parameter直接插入计算图中当叶子节点，buffer默认不插入（可调）。  
+&nbsp; 2. 暂时修改nn.Module类的静态方法\_\_call\_\_，让原来执行网络运算的方法变为生成计算图的节点的方法。判断这个模块是不是叶子模块，是就插入节点；不是就递归进入模块内部继续追踪  
+&nbsp; 3. 创建output节点。创建节点需要用到输入args，这部操作会递归调用4.2的call方法，直到找到叶子节点，从而递归生成整张计算图的节点。
+综上，生成的图节点有6个类型：神经网络输入placeholder；模型参数get_attr；三种执行操作call\_function(自由函数，如+-\*/)；call\_module(模型操作，如Linear，ConvNd)；call\_method(torch函数，如ReLu)；神经网络输出output。
+
+​
 
 ### PyTorch源码解析
 C10：Caffe Tensor Library，最基础的张量库，包含PyTorch的核心抽象，包括张量和存储数据结构的实际实现  
