@@ -63,7 +63,7 @@ pytorch视频讲解
 <font color='red'> 未完成 </font> 
 
 #### log同步到本地 
-<font color='blue'> 暂缓 </font>  
+<font color='LimeGreen'> 完成 </font>  
 #### sudo权限 
 <font color='LimeGreen'> 完成 </font>
 
@@ -161,4 +161,14 @@ pytorch视频讲解
 <font color='red'> 未完成1893/3000 </font> 
 
 ## 5.17任务
+#### 跑通olla
+<font color='red'> 未完成 ，gurobi问题</font> 
+#### pycharm远程调试功能
+<font color='LimeGreen'> 完成 </font>
 #### 看OLLA代码，结合论文生成文档
+<font color='red'> 未完成 </font> 
+
+## 5.18任务
+#### 在服务器上部署olla环境，激活gurobi，能成功运行
+#### 掌握benchmarks.py各种函数意思
+#### 论文正文至2500字
