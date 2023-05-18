@@ -177,3 +177,7 @@ pytorch视频讲解
 <font color='red'> 未完成 </font> 
 #### 论文正文至2500字
 <font color='red'> 未完成 </font> 
+
+## 5.19任务
+#### 掌握benchmarks.py个函数意思
+#### 运行olla
