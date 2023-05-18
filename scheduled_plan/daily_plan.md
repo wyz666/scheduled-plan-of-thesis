@@ -169,6 +169,11 @@ pytorch视频讲解
 <font color='red'> 未完成 </font> 
 
 ## 5.18任务
-#### 在服务器上部署olla环境，激活gurobi，能成功运行
+#### 在服务器上部署olla环境，激活gurobi
+<font color='LimeGreen'> 完成 </font>
+#### 运行olla
+<font color='red'> 未完成，gorubi问题 </font> 
 #### 掌握benchmarks.py各种函数意思
+<font color='red'> 未完成 </font> 
 #### 论文正文至2500字
+<font color='red'> 未完成 </font> 
