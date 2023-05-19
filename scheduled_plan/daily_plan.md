@@ -180,4 +180,11 @@ pytorch视频讲解
 
 ## 5.19任务
 #### 掌握benchmarks.py个函数意思
+<font color='red'> 未完成，看到249行，生成计算图位置 </font> 
 #### 运行olla
+<font color='red'> 未完成。未连接上服务器 </font> 
+
+## 5.20任务
+#### 继续看源码
+#### 若能连接服务器，解决olla关于gurobi环境变量问题
+仿照gurobi安装目录/examples/python下的范例,配置环境变量
