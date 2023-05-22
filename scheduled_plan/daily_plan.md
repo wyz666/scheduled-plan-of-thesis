@@ -142,7 +142,7 @@ pytorch视频讲解
 #### 补论文进度至3000字
 <font color='red'> 未完成 </font> 
 #### torch.fx
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 完成，仍需进一步了解 </font> 
 ## 5.15任务
 #### 搞清楚torch.fx原理
 <font color='LimeGreen'> 完成 </font>
@@ -161,8 +161,8 @@ pytorch视频讲解
 <font color='red'> 未完成1893/3000 </font> 
 
 ## 5.17任务
-#### 跑通olla
-<font color='red'> 未完成 ，gurobi问题</font> 
+#### 跑通olla 
+<font color='LimeGreen'> 完成，gutobi问题已解决 </font>
 #### pycharm远程调试功能
 <font color='LimeGreen'> 完成 </font>
 #### 看OLLA代码，结合论文生成文档
@@ -172,7 +172,7 @@ pytorch视频讲解
 #### 在服务器上部署olla环境，激活gurobi
 <font color='LimeGreen'> 完成 </font>
 #### 运行olla
-<font color='red'> 未完成，gorubi问题 </font> 
+<font color='LimeGreen'> 完成 </font> 
 #### 掌握benchmarks.py各种函数意思
 <font color='red'> 未完成 </font> 
 #### 论文正文至2500字
@@ -182,9 +182,18 @@ pytorch视频讲解
 #### 掌握benchmarks.py个函数意思
 <font color='red'> 未完成，看到249行，生成计算图位置 </font> 
 #### 运行olla
-<font color='red'> 未完成。未连接上服务器 </font> 
+<font color='LimeGreen'> 完成 </font> 
 
 ## 5.20任务
 #### 继续看源码
+<font color='red'> 未完成 </font> 
 #### 若能连接服务器，解决olla关于gurobi环境变量问题
-仿照gurobi安装目录/examples/python下的范例,配置环境变量
+仿照gurobi安装目录/examples/python下的范例,配置环境变量  
+<font color='LimeGreen'> 完成，环境变量注释后程序仍可运行 </font> 
+## 5.22任务
+#### 弄清loadModel中所有函数的作用
+<font color='red'> 未完成。学校VPN关闭了远程访问端口 </font> 
+
+## 5.23任务
+#### 单个输出网络评估结果，通过流输出log日志
+#### 看完源码，输出理解文档

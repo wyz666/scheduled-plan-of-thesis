@@ -4,7 +4,7 @@ args接收命令行输入
 实例化一个Benchmark对象b
 遍历BENCHMARKS中的神经网络按照运行模式(eval,train)，batch\_size(1,32)
 
-### benchmark类
+### Benchmark类
 **load\_model方法**：加载已有神经网络，定义输入形状  
 入参：模型名，执行模式，批量大小，设备名，profile=none，warm\_up\_iters=0预热器，profile\_iters=1，render\_model=False渲染模型，infer\_trace=False推断追踪  
 (a,)定义一个一元组，必须加逗号
@@ -20,12 +20,16 @@ torch.concat(tuple,dim)按维度合并元组中的张量
 返回 预估显存峰值, 实例化Simulator（传入graph）时间
 
 **run\_node\_ordering方法**：
+
 ## olla/torch/torch\_graph\_importer.py
 **DeepTracer类**：提供了一个返回值为False的is\_leaf\_module方法  
 ### TorchGraphImporter类
 变量后面加冒号是类型注释  
 **import\_via\_fx方法**：
-**import\_via\_aotautograd方法**：
+**import\_via\_aotautograd方法**：  
+fn\_model\_wrapper方法：
+
+
 ## olla/simulator.py
 **Simulate方法**：根据order遍历节点预估显存峰值  
 入参是node\_ordering  
