@@ -196,4 +196,11 @@ pytorch视频讲解
 
 ## 5.23任务
 #### 单个输出网络评估结果，通过流输出log日志
+<font color='LimeGreen'> 完成 </font> 
 #### 看完源码，输出理解文档
+<font color='red'> 未完成 </font> 
+
+## 5.24任务
+#### 写500字论文
+#### 理解fx原理，生成文档
+#### 理解olla源码，从torch\_graph\_importer236行
