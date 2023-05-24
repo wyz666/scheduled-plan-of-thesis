@@ -202,5 +202,13 @@ pytorch视频讲解
 
 ## 5.24任务
 #### 写500字论文
+<font color='red'> 未完成 </font>
 #### 理解fx原理，生成文档
-#### 理解olla源码，从torch\_graph\_importer236行
+<font color='LimeGreen'> 完成 </font>
+#### 理解olla源码，从`torch_graph_importer`236行
+<font color='red'> 未完成 </font>
+
+## 5.25任务
+#### 理解olla源码，生成汇报PPT
+从`torch_graph_importer`236行
+#### 调研卷积优化算法，例如googlenet卷积优化策略
