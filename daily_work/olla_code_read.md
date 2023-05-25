@@ -1,17 +1,64 @@
-## benchmarks.py
-### main
-args接收命令行输入
-实例化一个Benchmark对象b
-遍历BENCHMARKS中的神经网络按照运行模式(eval,train)，batch\_size(1,32)
+## benchmarks.py主要调用顺序
 
-### Benchmark类
-**load\_model方法**：加载已有神经网络，定义输入形状  
-入参：模型名，执行模式，批量大小，设备名，profile=none，warm\_up\_iters=0预热器，profile\_iters=1，render\_model=False渲染模型，infer\_trace=False推断追踪  
-(a,)定义一个一元组，必须加逗号
-torch.concat(tuple,dim)按维度合并元组中的张量
-首先判断模型名，给网络模型和模型输入初始化赋值  
-判断是否在cpu上，不在就to(device)  
-实例化一个TorchGraphImporter对象，并调用import\_via\_aotautograd方法，
+### main
+
+`args`接收命令行输入  
+实例化一个`Benchmark`类型`b`  
+遍历`BENCHMARKS`中的神经网络`model,mode,batch_size`:  
+定义一个`OrderedDict`类型`result`存放迭代信息  
+给`device，profile,warm_up_iters,profile_iters`赋值  
+`b`调用`load_model`方法
+
+### `load_model`方法
+  
+入参：模型名，执行模式，批量大小，设备名，`profile`记录预处理开关的列表，`warm_up_iters`预热轮次，`profile_iters`预训练轮次，`render_model=False`是否打印模型，`infer_trace=False`推断追踪   
+`(a,)`定义一个一元组，必须加逗号  
+`torch.concat(tuple,dim)`按维度合并元组中的张量
+首先根据模型名，加载神经网络模型到`model`，定义模型输入样例`inputs`  
+判断`mode`和`device`，决定执行模式和数据存储位置  
+定义优化器`optimizer`选用SGD  
+创建一个`TorchGraphImporter`实例`importer`，并调用`import_via_aotautograd`方法，同时损失函数`loss_fn`选用`torch.nn.CrossEntropyLoss()`
+
+### `import_via_aotautograd`方法
+
+主要入参:`model`是继承自`nn.Model`的各个网络模型的实例，`*inputs`是一个用元组包装的模型输入样例  
+**wrapper装饰器**：本质上是一个函数，可让其他函数在不需要改代码的前提下增加额外功能，返回值也是一个函数对象  
+定义了一个函数`fn_model_wrapper`，该函数将样例输入网络，模拟运行一遍神经网络
+定义了`fx_trace`，调用`make_fx`包装了函数`fn_model_wrapper`，返回的是函数对象`fn_model_wrapper`，拥有属性`code`和`graph`，详见下图
+![](fx_trace.jpg)
+
+最后返回调用了`self.import_from_fx`方法
+
+### `import_from_fx`方法
+
+主要入参：`fx_trace`一个函数对象，`*inputs`接收了模型输入样例以及模型参数的值，是一个长度为（1+模型参数数量）的元组  
+`self.fx_trace = fx_trace`使得外部可以调用`fx_trace`，这个`self`就是`importer`  
+从`fx_trace`取出`graph`赋值给`fx_graph`，是一个`torch.fx.graph.Graph`类型，里面有两个属性`nodes`和`owning_module`，前者是由各个节点组成的列表，后者是这个图所属的模块  
+
+创建一个数据流图（df）的实例`df_graph`，调用了`dataflow_graph.Graph()`  
+**创建df节点**：遍历`fx_graph.nodes`中的节点，将模型参数的节点类型名称改为`weight`，调用数据流图的`add_node`方法将非`output`节点依次加入到`df_graph`的字典类型属性`nodes`中，键为节点名称，值为数据流图定义的节点类型，同时会返回这个节点类型。定义了一个空字典`fx2df_node_map`，键为fx节点类型，值为df节点类型，做一个**映射**  
+
+**创建df边**：再次遍历`fx_graph.nodes`中的节点`fx_node`，读取节点`meta`信息（记录张量的shape，dtype等信息），调用自定义的`get_size`方法算出节点占用的bytes赋值给`size`。判断`fx_node`是否在映射中，从映射中取出对应的`df_node`，判断其是否是模型参数，将`size`赋值给它并置0。遍历它的使用节点`fx_sink`（调用`fx_node.users.keys()`函数），如果这些节点在映射中，加入到`df_sinks`列表中。`df_sinks`不为空即代表节点有使用者，调用`add_edge`方法在图中加入有向边。需要注意的是，除了模型参数，`size`都被赋予了边。
+
+调用了`_cleanup_dataflow_graph`方法，入参为上面生成的数据流图，该方法会删除没有入边和出边的参数节点，删除输入边大小为0的getitem方法节点，删除relu节点，将偏置参数合并到权重参数节点中。
+
+
+### `dataflow_graph.Graph()`数据流图类
+初始化函数：字符串name，字典nodes和deges
+定义了一些列对节点和边的操作  
+`add_node`方法：传入节点名`name`和节点类型`op_type`。用节点名作为键，用入参实例化df的`Node`类型作为值，插入df的`nodes`中，返回`self.nodes[name]`  
+`add_edge`方法：入参有`sources`开始节点列表，`sinks`结束节点列表，`size`开始节点的大小，`name`边的名字“节点名:0”。用入参创建`MultiSourceEdge`类型实例`edge`作为值，`name`为键，加入到df的字典`edges`中。对于`sources`中的节点，将边加入到输出边集合`fanout`中；`sinks`中的节点，将边加入到输入边集合`fanin`中。
+
+
+
+
+
+
+
+
+
+
+
 
 **run\_simulation方法**：用graph和node\_rder预估一个显存峰值
 入参是graph和node\_order
@@ -27,6 +74,7 @@ torch.concat(tuple,dim)按维度合并元组中的张量
 变量后面加冒号是类型注释  
 **import\_via\_fx方法**：
 **import\_via\_aotautograd方法**：  
+  
 fn\_model\_wrapper方法：
 
 

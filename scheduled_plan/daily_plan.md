@@ -210,5 +210,11 @@ pytorch视频讲解
 
 ## 5.25任务
 #### 理解olla源码，生成汇报PPT
-从`torch_graph_importer`236行
+从`torch_graph_importer`236行  
+<font color='red'> 未完成 </font>
 #### 调研卷积优化算法，例如googlenet卷积优化策略
+<font color='red'> 未完成 </font>
+
+## 5.26任务
+#### 汇报
+#### 源码
