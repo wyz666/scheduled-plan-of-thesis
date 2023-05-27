@@ -26,3 +26,4 @@ torch内置函数，如`torch.topk`、`torch.sum`，都是`Tensor`调用`__torch
 自定义函数和库函数，如len，如果用户想自定义计算图的节点，fx提供了一个`wrap`接口。该接口查看函数是否有计算图的节点作为输入，有就返回`call_function`类型的`Proxy`，没有就执行一下原函数，不作为节点。  
 模块的patch。Trcer初始化函数包含一个参数`autowrap_modules`，fx默认自动patch了math模块，将math模块中对外提供的函数记录下来，然后进行替换。  
 `Module.__call__`的patch。如果模块不是叶子模块，则递归进入模块内部追踪；如果是叶子模块，则返回一个`call_moudle`类型的`Proxy`。  
+创建output节点

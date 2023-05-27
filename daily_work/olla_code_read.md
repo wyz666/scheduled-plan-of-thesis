@@ -24,7 +24,7 @@
 主要入参:`model`是继承自`nn.Model`的各个网络模型的实例，`*inputs`是一个用元组包装的模型输入样例  
 **wrapper装饰器**：本质上是一个函数，可让其他函数在不需要改代码的前提下增加额外功能，返回值也是一个函数对象  
 定义了一个函数`fn_model_wrapper`，该函数将样例输入网络，模拟运行一遍神经网络
-定义了`fx_trace`，调用`make_fx`包装了函数`fn_model_wrapper`，返回的是函数对象`fn_model_wrapper`，拥有属性`code`和`graph`，详见下图
+定义了`fx_trace`，调用`make_fx`包装了函数`fn_model_wrapper`，返回的是函数对象`fn_model_wrapper`，拥有属性`code`和`graph`，可以看作是`fx.GraphModule`类型。详见下图
 ![](fx_trace.jpg)
 
 最后返回调用了`self.import_from_fx`方法
@@ -40,7 +40,9 @@
 
 **创建df边**：再次遍历`fx_graph.nodes`中的节点`fx_node`，读取节点`meta`信息（记录张量的shape，dtype等信息），调用自定义的`get_size`方法算出节点占用的bytes赋值给`size`。判断`fx_node`是否在映射中，从映射中取出对应的`df_node`，判断其是否是模型参数，将`size`赋值给它并置0。遍历它的使用节点`fx_sink`（调用`fx_node.users.keys()`函数），如果这些节点在映射中，加入到`df_sinks`列表中。`df_sinks`不为空即代表节点有使用者，调用`add_edge`方法在图中加入有向边。需要注意的是，除了模型参数，`size`都被赋予了边。
 
-调用了`_cleanup_dataflow_graph`方法，入参为上面生成的数据流图，该方法会删除没有入边和出边的参数节点，删除输入边大小为0的getitem方法节点，删除relu节点，将偏置参数合并到权重参数节点中。
+调用了`_cleanup_dataflow_graph`方法，入参为上面生成的数据流图，该方法会删除没有入边和出边的参数节点，删除输入边大小为0的getitem方法节点，删除relu节点，将偏置参数合并到权重参数节点中。 
+
+返回 df图，df图节点顺序，`fx_tracer`，fx与df的节点映射
 
 
 ### `dataflow_graph.Graph()`数据流图类

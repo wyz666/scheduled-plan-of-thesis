@@ -202,7 +202,7 @@ pytorch视频讲解
 
 ## 5.24任务
 #### 写500字论文
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 完成，5.26 </font>
 #### 理解fx原理，生成文档
 <font color='LimeGreen'> 完成 </font>
 #### 理解olla源码，从`torch_graph_importer`236行
@@ -217,4 +217,12 @@ pytorch视频讲解
 
 ## 5.26任务
 #### 汇报
+<font color='red'> 未完成 </font>
 #### 源码
+<font color='red'> 未完成 </font>
+
+## 5.28任务
+#### 从断点继续看源码，理解调整顺序的操作
+benchmarks.py：664行
+#### 写关于遗传算法论文500字
+重点编码部分（建模）
