@@ -166,7 +166,7 @@ pytorch视频讲解
 #### pycharm远程调试功能
 <font color='LimeGreen'> 完成 </font>
 #### 看OLLA代码，结合论文生成文档
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 
 ## 5.18任务
 #### 在服务器上部署olla环境，激活gurobi
@@ -174,13 +174,14 @@ pytorch视频讲解
 #### 运行olla
 <font color='LimeGreen'> 完成 </font> 
 #### 掌握benchmarks.py各种函数意思
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 #### 论文正文至2500字
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 
 ## 5.19任务
 #### 掌握benchmarks.py个函数意思
 <font color='red'> 未完成，看到249行，生成计算图位置 </font> 
+<font color='LimeGreen'> 5.28完成 </font>
 #### 运行olla
 <font color='LimeGreen'> 完成 </font> 
 
@@ -219,10 +220,21 @@ pytorch视频讲解
 #### 汇报
 <font color='red'> 未完成 </font>
 #### 源码
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 5.28完成 </font>
+
+#### 远程调试代码
+<font color='LimeGreen'> 5.27总结： </font>
+换用vscode远程调试程序，优点：不卡顿，方便备注；缺点：debug功能不如pycharm强大，一些变量类型识别不了，也无法在代码侧实时显示变量值
 
 ## 5.28任务
 #### 从断点继续看源码，理解调整顺序的操作
-benchmarks.py：664行
+benchmarks.py：664行  
+<font color='LimeGreen'> 5.28总结：</font>初步看完源码中benchmarks的所有调用，
 #### 写关于遗传算法论文500字
-重点编码部分（建模）
+重点编码部分（建模）  
+<font color='red'> 未完成 </font>2638
+
+## 5.29任务
+#### 完成遗传算法编码
+#### 撰写论文第三章理论部分1000字
+#### 找关于优化遗传算法的trick

@@ -7,7 +7,11 @@
 遍历`BENCHMARKS`中的神经网络`model,mode,batch_size`:  
 定义一个`OrderedDict`类型`result`存放迭代信息  
 给`device，profile,warm_up_iters,profile_iters`赋值  
-`b`调用`load_model`方法
+`b`调用`load_model`方法，得到df图信息，fx图信息，模型以及输入样例  
+判断是否预训练测试显存占用状况，打印显存碎片信息，缓存区大小及真实分配大小  
+`b`调用`run_simulation`方法，得到预估峰值占用  
+调用`run_node_ordering`方法，
+
 
 ### `load_model`方法
   
@@ -17,7 +21,11 @@
 首先根据模型名，加载神经网络模型到`model`，定义模型输入样例`inputs`  
 判断`mode`和`device`，决定执行模式和数据存储位置  
 定义优化器`optimizer`选用SGD  
-创建一个`TorchGraphImporter`实例`importer`，并调用`import_via_aotautograd`方法，同时损失函数`loss_fn`选用`torch.nn.CrossEntropyLoss()`
+创建一个`TorchGraphImporter`实例`importer`，并调用`import_via_aotautograd`方法，同时损失函数`loss_fn`选用`torch.nn.CrossEntropyLoss()`，返回df图`g`，df图节点顺序，fx的`GraphModule`，df与fx图之间的节点映射  
+然后给`g`命名，调用`canonicalize`将df图中边的类型标准化。随后提前图中参数更新操作，更早地释放梯度。同时延后张量的生成，但这一步没有生效  
+
+返回 df图，fx图，模型输入输出
+
 
 ### `import_via_aotautograd`方法
 
@@ -28,6 +36,7 @@
 ![](fx_trace.jpg)
 
 最后返回调用了`self.import_from_fx`方法
+
 
 ### `import_from_fx`方法
 
@@ -40,9 +49,9 @@
 
 **创建df边**：再次遍历`fx_graph.nodes`中的节点`fx_node`，读取节点`meta`信息（记录张量的shape，dtype等信息），调用自定义的`get_size`方法算出节点占用的bytes赋值给`size`。判断`fx_node`是否在映射中，从映射中取出对应的`df_node`，判断其是否是模型参数，将`size`赋值给它并置0。遍历它的使用节点`fx_sink`（调用`fx_node.users.keys()`函数），如果这些节点在映射中，加入到`df_sinks`列表中。`df_sinks`不为空即代表节点有使用者，调用`add_edge`方法在图中加入有向边。需要注意的是，除了模型参数，`size`都被赋予了边。
 
-调用了`_cleanup_dataflow_graph`方法，入参为上面生成的数据流图，该方法会删除没有入边和出边的参数节点，删除输入边大小为0的getitem方法节点，删除relu节点，将偏置参数合并到权重参数节点中。 
+调用了`_cleanup_dataflow_graph`方法，入参为上面生成的df图，该方法会删除没有入边和出边的参数节点，删除输入边大小为0的`getitem`方法节点，删除`relu`，`t`等in-place操作节点，将偏置参数合并到权重参数节点中。 
 
-返回 df图，df图节点顺序，`fx_tracer`，fx与df的节点映射
+返回 df图，df图节点顺序，fx处理后的模型，fx与df的节点映射
 
 
 ### `dataflow_graph.Graph()`数据流图类
@@ -52,42 +61,31 @@
 `add_edge`方法：入参有`sources`开始节点列表，`sinks`结束节点列表，`size`开始节点的大小，`name`边的名字“节点名:0”。用入参创建`MultiSourceEdge`类型实例`edge`作为值，`name`为键，加入到df的字典`edges`中。对于`sources`中的节点，将边加入到输出边集合`fanout`中；`sinks`中的节点，将边加入到输入边集合`fanin`中。
 
 
+### `run_simulation`方法
+
+入参：df图和节点顺序  
+创建了一个`Simulator`类型实例`s`并将df图赋值给它作为私有属性，并对创建时间计时。调用了`Simulate`方法，得到预估显存峰值以及列表`mem_per_timestep`，列表中记录使显存峰值增加的节点与递增的显存峰值组成的元组。  
+返回 预估显存峰值，实例化`s`的时间
+
+**`Simulate`方法**：  
+入参是节点顺序  
+`defaultdict(lambda: 0)`定义一个默认 值为0的字典（值为int类型），lambda冒号后面是函数返回值。初始化一个默认字典用来记录张量引用次数  
+初始化`memory_used`记录当前显存使用  
+遍历每个节：  
+对节点输出的每个张量，记录其被引用次数，为其分配显存，显存占用增加  
+比较显存占用与峰值占用，更新峰值占用，并将节点和显存占用作为元组加入到`mem_per_timestep`列表  
+对节点的每个输入，将其被引次数减1，被引次数不能小于0。如果被引次数归零，释放，显存占用减少  
+返回显存峰值和`mem_per_timestep`列表
 
 
+## `run_node_ordering`方法
 
+入参：df图，fx包装的模型，fx与df节点映射  
+初始化一个`Scheduler`实例`s`，调用了`ComputeOptimalSchedule`方法
 
-
-
-
-
-
-
-**run\_simulation方法**：用graph和node\_rder预估一个显存峰值
-入参是graph和node\_order
-实例化了Simulator类并传入了graph,记录了开始时间start和结束时间stop,  
-调用了类方法Simulate并传入node\_order,获得simulated\_peak\_mem\_usage, mem\_per\_timestep  
-返回 预估显存峰值, 实例化Simulator（传入graph）时间
-
-**run\_node\_ordering方法**：
-
-## olla/torch/torch\_graph\_importer.py
-**DeepTracer类**：提供了一个返回值为False的is\_leaf\_module方法  
-### TorchGraphImporter类
-变量后面加冒号是类型注释  
-**import\_via\_fx方法**：
-**import\_via\_aotautograd方法**：  
-  
-fn\_model\_wrapper方法：
-
-
-## olla/simulator.py
-**Simulate方法**：根据order遍历节点预估显存峰值  
-入参是node\_ordering  
-defaultdict(lambda: 0)定义一个默认 值为0的字典（值为int类型），lambda冒号后面是函数返回值。  
-初始化一个默认字典用来记录张量引用次数  
-初始化memory\_used记录当前显存使用  
-遍历每个节点node，  
-对节点的每个fanout，记录被引用次数，分配显存，显存占用增加  
-比较显存占用与峰值占用，更新峰值占用，并将节点和显存占用作为元组加入到mem\_per\_timestep列表  
-对节点的每个fanin，将其被引次数减1，被引次数不能小于0。如果被引次数归零，释放，显存占用减少  
-返回显存峰值和mem\_per\_timestep列表
+**`ComputeOptimalSchedule`方法**：  
+入参传进来一个系统最大值`mem_limit`，还有一些布尔类型的值  
+调用自身`Scheduler`类的`ComputeMinimumMemoryRequired`方法，该方法计算df图中所有节点所需的显存占用（输入+输出边的大小），并返回显存占用最大的节点和值`bottleneck_node，min_memory_requirement`  
+定义时间戳个数`num_timesteps`，根据之前计算的每个节点的计算等级，将（最高等级+1）的赋值给时间戳，表示网络模型可以在这么多时间戳内完成，一个时间戳可以运行一个或并行运行多个计算节点。  
+定义`asap`和`alap`，分别得到节点最早和最晚执行时间戳字典，定义`makspan`，调用`ComputeMakespans`得到节点的最早使用时间戳和最晚释放时间戳  
+定义`max_address`，表示最大的逻辑地址
