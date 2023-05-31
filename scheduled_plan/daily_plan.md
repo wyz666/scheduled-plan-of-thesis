@@ -127,20 +127,20 @@ pytorch视频讲解
 #### 看swapadvisor，学习GA建模方式
 <font color='LimeGreen'> 完成 </font>
 #### 建模
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 5.31 完成 </font>
 
 
 ## 5.13任务
 #### 整理知识碎片，写出3000字
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 5.31 完成 </font>
 #### 结合GA，神经网络建模
 <font color='red'> 未完成 </font>
 
 ## 5.14任务
 #### 建模
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.31 完成 </font> 
 #### 补论文进度至3000字
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.31 完成 </font> 
 #### torch.fx
 <font color='LimeGreen'> 完成，仍需进一步了解 </font> 
 ## 5.15任务
@@ -149,16 +149,16 @@ pytorch视频讲解
 #### 结合olla思考建模方式，DTR同步研究  
 <font color='red'> 未完成 </font> 
 #### 写1000字论文
-<font color='red'> 未完成450/1000 </font> 
+<font color='LimeGreen'> 5.31 完成 </font> 
 #### 给神经网络训练流程建立一个初步模型  
 结点表示什么，边表示什么，有哪些属性，目标函数，约束条件  
 <font color='red'> 未完成 </font> 
 
 ## 5.16任务
 #### 建立初步模型，完成汇报文档
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.31 完成 </font> 
 #### 论文字数到3000字
-<font color='red'> 未完成1893/3000 </font> 
+<font color='LimeGreen'> 5.31 完成 </font> 
 
 ## 5.17任务
 #### 跑通olla 
@@ -166,7 +166,7 @@ pytorch视频讲解
 #### pycharm远程调试功能
 <font color='LimeGreen'> 完成 </font>
 #### 看OLLA代码，结合论文生成文档
-<font color='LimeGreen'> 5.28完成 </font> 
+<font color='LimeGreen'> 5.28 完成 </font> 
 
 ## 5.18任务
 #### 在服务器上部署olla环境，激活gurobi
@@ -180,26 +180,26 @@ pytorch视频讲解
 
 ## 5.19任务
 #### 掌握benchmarks.py个函数意思
-<font color='red'> 未完成，看到249行，生成计算图位置 </font> 
+未完成，看到249行，生成计算图位置   
 <font color='LimeGreen'> 5.28完成 </font>
 #### 运行olla
 <font color='LimeGreen'> 完成 </font> 
 
 ## 5.20任务
 #### 继续看源码
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 #### 若能连接服务器，解决olla关于gurobi环境变量问题
 仿照gurobi安装目录/examples/python下的范例,配置环境变量  
 <font color='LimeGreen'> 完成，环境变量注释后程序仍可运行 </font> 
 ## 5.22任务
 #### 弄清loadModel中所有函数的作用
-<font color='red'> 未完成。学校VPN关闭了远程访问端口 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 
 ## 5.23任务
 #### 单个输出网络评估结果，通过流输出log日志
 <font color='LimeGreen'> 完成 </font> 
 #### 看完源码，输出理解文档
-<font color='red'> 未完成 </font> 
+<font color='LimeGreen'> 5.28完成 </font> 
 
 ## 5.24任务
 #### 写500字论文
@@ -207,7 +207,7 @@ pytorch视频讲解
 #### 理解fx原理，生成文档
 <font color='LimeGreen'> 完成 </font>
 #### 理解olla源码，从`torch_graph_importer`236行
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 5.28完成 </font>
 
 ## 5.25任务
 #### 理解olla源码，生成汇报PPT
@@ -218,7 +218,7 @@ pytorch视频讲解
 
 ## 5.26任务
 #### 汇报
-<font color='red'> 未完成 </font>
+<font color='LimeGreen'> 5.31完成 </font>
 #### 源码
 <font color='LimeGreen'> 5.28完成 </font>
 
@@ -232,9 +232,23 @@ benchmarks.py：664行
 <font color='LimeGreen'> 5.28总结：</font>初步看完源码中benchmarks的所有调用，
 #### 写关于遗传算法论文500字
 重点编码部分（建模）  
-<font color='red'> 未完成 </font>2638
+<font color='LimeGreen'> 5.31 完成 </font>3298 
 
 ## 5.29任务
 #### 完成遗传算法编码
+<font color='red'> 未完成 </font>
 #### 撰写论文第三章理论部分1000字
+<font color='LimeGreen'> 5.31完成 </font>
 #### 找关于优化遗传算法的trick
+<font color='red'> 未完成 </font>
+
+## <font color='LimeGreen'> 5.31总结： </font>   
+完成建模汇报，定下本周目标为写完第三章理论部分内容。  
+#### 遗留问题：  
+用GA解决问题，在哪些方面优于其他启发式算法，从效率和结果来看  
+实验结果可以不与原文比对  
+第二点做什么？老师不推荐修改算子，使用重计算尽量使优化目标与第一点相同，需要调研  
+
+## 6.1任务
+#### 撰写论文
+推第三章内容，核心部分3.3节的建模，3.4节的求解。其次3.1，3.2
