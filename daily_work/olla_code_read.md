@@ -10,7 +10,7 @@
 `b`调用`load_model`方法，得到df图信息，fx图信息，模型以及输入样例  
 判断是否预训练测试显存占用状况，打印显存碎片信息，缓存区大小及真实分配大小  
 `b`调用`run_simulation`方法，得到预估峰值占用  
-调用`run_node_ordering`方法，
+调用`run_node_ordering`方法，得到优化后的节点顺序，显存占用峰值，以及优化时间
 
 
 ### `load_model`方法
@@ -88,4 +88,7 @@
 调用自身`Scheduler`类的`ComputeMinimumMemoryRequired`方法，该方法计算df图中所有节点所需的显存占用（输入+输出边的大小），并返回显存占用最大的节点和值`bottleneck_node，min_memory_requirement`  
 定义时间戳个数`num_timesteps`，根据之前计算的每个节点的计算等级，将（最高等级+1）的赋值给时间戳，表示网络模型可以在这么多时间戳内完成，一个时间戳可以运行一个或并行运行多个计算节点。  
 定义`asap`和`alap`，分别得到节点最早和最晚执行时间戳字典，定义`makspan`，调用`ComputeMakespans`得到节点的最早使用时间戳和最晚释放时间戳  
-定义`max_address`，表示最大的逻辑地址
+定义`max_address`，表示最大的逻辑地址  
+`generate_vars[e][t]`表示在`t`时刻是否为张量`e`分配显存  
+`preserve_vars[e][t]`表示在`t`时刻张量`e`是否存储在显存中  
+在求解器中加入各种限制条件，加入目标函数，得到以上两个变量的值
