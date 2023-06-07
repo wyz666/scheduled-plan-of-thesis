@@ -287,7 +287,13 @@ benchmarks.py：664行
 交叉设计
 变异设计
 选择设计
+<font color='LimeGreen'> 完成 </font>进度：655  
 显存碎片的启发式方法设计
 
 #### 提交新一版第三章理论
+<font color='LimeGreen'> 完成 </font>进度：5588
+
+6.8任务
+#### 汇报进度
+找老师探讨显存碎片地具体解决方案
 
